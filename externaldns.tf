@@ -1,4 +1,4 @@
-module "service_accounts" {
+module "edns_sa" {
   source        = "terraform-google-modules/service-accounts/google"
   version       = "~> 4.0"
   project_id    = var.project_id
@@ -33,49 +33,47 @@ module "service_accounts" {
 # }
 
 
-# module "release_edns" {
-#   source  = "terraform-module/release/helm"
-#   version = "2.8.0"
+module "release_edns" {
+  source  = "terraform-module/release/helm"
+  version = "2.8.0"
 
-#   namespace  = "external-dns"
-#   repository = "https://charts.bitnami.com/bitnami"
+  namespace  = "external-dns"
+  repository = "https://charts.bitnami.com/bitnami"
 
 
-#   app = {
-#     name             = "cw"
-#     version          = "6.5.*"
-#     chart            = "external-dns"
-#     create_namespace = true
-#     wait             = true
-#     deploy           = 1
-#   }
+  app = {
+    name             = "cw"
+    version          = "6.5.*"
+    chart            = "external-dns"
+    create_namespace = true
+    wait             = true
+    deploy           = 1
+  }
 
-#   values = [<<EOF
-# topologySpreadConstraints:
-#   - maxSkew: 1
-#     topologyKey: topology.kubernetes.io/zone
-#     whenUnsatisfiable: DoNotSchedule
-# tolerations:
-#   - key: CriticalAddonsOnly
-#     operator: Exists
-#   - key: "eks.amazonaws.com/compute-type"
-#     operator: "Equal"
-#     value: "fargate"
+  values = [<<EOF
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: DoNotSchedule
+tolerations:
+  - key: CriticalAddonsOnly
+    operator: Exists
 
-# replicaCount: 2
-# serviceAccount:
-#   name: external-dns
-# txtOwnerId: "${var.uniqueName}"
 
-# EOF 
-#   ]
-#   set = [
-#     {
-#       "name"  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-#       "value" = module.irsa_edns.iam_role_arn
-#     }
-#   ]
-# }
+replicaCount: 2
+serviceAccount:
+  name: external-dns
+txtOwnerId: "${var.cluster_name}"
+
+EOF 
+  ]
+  set = [
+    {
+      "name"  = "serviceAccount.annotations.iam\\.gke\\.io/gcp-service-account"
+      "value" = module.edns_sa.email
+    }
+  ]
+}
 
 
 
