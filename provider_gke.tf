@@ -9,7 +9,7 @@ data "google_client_config" "default" {}
 
 provider "helm" {
   kubernetes {
-    host                   = "https://${module.gke_auth.host}"
+    host                   = module.gke_auth.host
     token                  = module.gke_auth.token
     cluster_ca_certificate = module.gke_auth.cluster_ca_certificate
   }
