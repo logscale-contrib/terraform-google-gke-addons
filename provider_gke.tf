@@ -11,7 +11,7 @@ provider "helm" {
   kubernetes {
     host                   = "https://${module.gke_auth.host}"
     token                  = module.gke_auth.token
-    cluster_ca_certificate = module.gke_auth.ca_certificate
+    cluster_ca_certificate = module.gke_auth.cluster_ca_certificate
   }
 }
 
