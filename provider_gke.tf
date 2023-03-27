@@ -7,8 +7,16 @@ module "gke_auth" {
 }
 data "google_client_config" "default" {}
 
-provider "kubernetes" {
-  host                   = "https://${module.gke_auth.endpoint}"
-  token                  = data.google_client_config.default.access_token
-  cluster_ca_certificate = module.gke_auth.ca_certificate
+provider "helm" {
+  kubernetes {
+    host                   = "https://${module.gke_auth.endpoint}"
+    token                  = data.google_client_config.default.access_token
+    cluster_ca_certificate = module.gke_auth.ca_certificate
+  }
 }
+
+# provider "kubernetes" {
+#   host                   = "https://${module.gke_auth.endpoint}"
+#   token                  = data.google_client_config.default.access_token
+#   cluster_ca_certificate = module.gke_auth.ca_certificate
+# }
