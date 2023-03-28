@@ -69,6 +69,7 @@ module "release_edns" {
   }
 
   values = [<<EOF
+logFormat: json
 provider: google
 google:
     project: ${var.project_id}
