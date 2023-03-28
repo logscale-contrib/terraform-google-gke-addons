@@ -68,7 +68,8 @@ topologySpreadConstraints:
 tolerations:
   - key: CriticalAddonsOnly
     operator: Exists
-
+nodeSelector:
+    iam.gke.io/gke-metadata-server-enabled: true
 
 replicaCount: 2
 serviceAccount:
