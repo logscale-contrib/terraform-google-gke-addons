@@ -9,6 +9,14 @@ module "edns_sa" {
   description   = var.cluster_name
 }
 
+resource "google_service_account_iam_binding" "edns" {
+  service_account_id = module.edns_sa.email
+  role               = "roles/iam.workloadIdentityUser"
+
+  members = [
+    "serviceAccount:$${${var.project_id}.svc.id.goog[external-dns/external-dns]",
+  ]
+}
 
 # data "aws_route53_zone" "selected" {
 #   zone_id = var.zone_id
@@ -39,7 +47,9 @@ module "release_edns" {
 
   namespace  = "external-dns"
   repository = "https://charts.bitnami.com/bitnami"
-
+  depends_on = [
+    google_service_account_iam_binding.edns
+  ]
 
   app = {
     name             = "cw"
