@@ -69,6 +69,10 @@ module "release_edns" {
   }
 
   values = [<<EOF
+provider: google
+google:
+    project: ${var.project_id}
+    zoneVisibility: public
 topologySpreadConstraints:
   - maxSkew: 1
     topologyKey: topology.kubernetes.io/zone
