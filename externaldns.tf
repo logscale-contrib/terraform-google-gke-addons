@@ -21,7 +21,7 @@ module "iam" {
 
   bindings = {
     "roles/iam.workloadIdentityUser" = [
-      format("serviceAccount:%s.svc.id.goog[%s/%s]", var.project_id, "external-dns","external-dns")
+      format("serviceAccount:%s.svc.id.goog[%s/%s]", var.project_id, "external-dns", "external-dns")
     ]
   }
 }
@@ -76,8 +76,15 @@ topologySpreadConstraints:
 tolerations:
   - key: CriticalAddonsOnly
     operator: Exists
-nodeSelector:
-    iam.gke.io/gke-metadata-server-enabled: true
+affinity:
+nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    nodeSelectorTerms:
+    - matchExpressions:
+        - key: iam.gke.io/gke-metadata-server-enabled
+        operator: In
+        values:
+        - true
 
 replicaCount: 2
 serviceAccount:
