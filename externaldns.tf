@@ -8,14 +8,22 @@ module "edns_sa" {
   display_name  = var.cluster_name
   description   = var.cluster_name
 }
+module "iam" {
+  source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
+  version = "7.5.0"
 
-resource "google_service_account_iam_binding" "edns" {
-  service_account_id = module.edns_sa.service_account.email
-  role               = "roles/iam.workloadIdentityUser"
+  project = var.project_id
 
-  members = [
-    "serviceAccount:$${${var.project_id}.svc.id.goog[external-dns/external-dns]",
+  service_accounts = [
+    module.edns_sa.email
   ]
+  mode = "authoritative"
+
+  bindings = {
+    "roles/iam.workloadIdentityUser" = [
+      format("serviceAccount:%s.svc.id.goog[%s/%s]", var.project_id, "external-dns","external-dns")
+    ]
+  }
 }
 
 # data "aws_route53_zone" "selected" {
@@ -48,7 +56,7 @@ module "release_edns" {
   namespace  = "external-dns"
   repository = "https://charts.bitnami.com/bitnami"
   depends_on = [
-    google_service_account_iam_binding.edns
+    module.iam
   ]
 
   app = {
