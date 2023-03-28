@@ -10,7 +10,7 @@ module "edns_sa" {
 }
 
 resource "google_service_account_iam_binding" "edns" {
-  service_account_id = module.edns_sa.email
+  service_account_id = module.edns_sa.service_account
   role               = "roles/iam.workloadIdentityUser"
 
   members = [
