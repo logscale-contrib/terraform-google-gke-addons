@@ -81,10 +81,14 @@ nodeAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
     nodeSelectorTerms:
     - matchExpressions:
+        - key: kubernetes.io/os
+          operator: In
+          values:
+          - linux    
         - key: iam.gke.io/gke-metadata-server-enabled
-        operator: In
-        values:
-        - true
+          operator: In
+          values:
+          - true
 
 replicaCount: 2
 serviceAccount:
