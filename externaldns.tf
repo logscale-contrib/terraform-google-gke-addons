@@ -19,7 +19,6 @@ module "iam" {
   ]
   mode = "authoritative"
 
-
   bindings = {
     "roles/iam.workloadIdentityUser" = [
       format("serviceAccount:%s.svc.id.goog[%s/%s]", var.project_id, "external-dns","external-dns")
