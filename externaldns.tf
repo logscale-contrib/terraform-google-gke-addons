@@ -51,7 +51,7 @@ module "iam" {
 
 module "release_edns" {
   source  = "terraform-module/release/helm"
-  version = "2.8.0"
+  version = "2.8.1"
 
   namespace  = "external-dns"
   repository = "https://charts.bitnami.com/bitnami"
