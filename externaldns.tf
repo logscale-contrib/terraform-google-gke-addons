@@ -10,7 +10,7 @@ module "edns_sa" {
 }
 module "iam" {
   source  = "terraform-google-modules/iam/google//modules/service_accounts_iam"
-  version = "7.5.0"
+  version = "7.6.0"
 
   project = var.project_id
 
